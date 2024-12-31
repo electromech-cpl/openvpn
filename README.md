@@ -26,7 +26,7 @@ Consider to use [openvpn-aws](https://github.com/d3vilh/openvpn-aws) as automate
 ```shell
 git clone https://github.com/d3vilh/openvpn-server
 ```
-> **Note**: Before deploying container check [Deployment Details](https://github.com/d3vilh/openvpn-server#container-deployment-details) section for setting all the required variables up.
+> **Note**: Before deploying container check [Deployment Details](https://github.com/electromech-cpl/openvpn#container-deployment-details) section for setting all the required variables up.
 2. Build the image:
 ```shell
 cd openvpn-server
