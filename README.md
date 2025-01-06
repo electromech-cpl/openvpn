@@ -156,7 +156,7 @@ docker run  --interactive --tty --rm \
   -v ./log:/var/log/openvpn \
   -v ./fw-rules.sh:/opt/app/fw-rules.sh \
   -v ./server.conf:/etc/openvpn/server.conf \
-  --privileged d3vilh/openvpn-server:latest
+  --privileged electromech-cpl/openvpn-server:latest
 ```
 
 ### Run the OpenVPN-UI image
@@ -168,7 +168,7 @@ docker run \
 -e OPENVPN_ADMIN_USERNAME='admin' \
 -e OPENVPN_ADMIN_PASSWORD='EmcCpl' \
 -p 8080:8080/tcp \
---privileged d3vilh/openvpn-ui:latest
+--privileged electromech-cpl/openvpn-ui:latest
 ```
 
 ### Build image form scratch:
@@ -179,7 +179,7 @@ git clone https://github.com/electromech-cpl/openvpn
 2. Build the image:
 ```shell
 cd openvpn-server
-docker build --force-rm=true -t electromech/openvpn-server .
+docker build --force-rm=true -t electromech-cpl/openvpn .
 ```
 
 ## Configuration
@@ -340,7 +340,7 @@ Restart of OpenVPN container can be done via the CLI by running following:
 sudo docker restart openvpn
 ```
 
-To define static IP, go to `~/openvpn/staticclients` directory and create text file with the name of your client and insert into this file ifrconfig-push option with the desired static IP and mask: `ifconfig-push 10.0.71.2 255.255.255.0`.
+To define static IP, go to `~/openvpn/staticclients` directory and create text file with the name of your client and insert into this file ifrconfig-push option with the desired static IP and mask: `ifconfig-push 10.0.3.2 255.255.255.0`.
 
 For example, if you would like to restrict Home subnet access to your best friend Slava, you should do this:
 
