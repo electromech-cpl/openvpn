@@ -24,7 +24,7 @@ Consider to use [openvpn-aws](https://github.com/electromech-cpl/openvpn) as aut
 
 1. Clone the repo:
 ```shell
-git clone https://github.com/d3vilh/openvpn-server
+git clone https://github.com/electromech-cpl/openvpn
 ```
 > **Note**: Before deploying container check [Deployment Details](https://github.com/electromech-cpl/openvpn#container-deployment-details) section for setting all the required variables up.
 2. Build the image:
