@@ -1,6 +1,6 @@
 #!/bin/sh
-# v.0.1 by @d3vilh@github.com aka Mr. Philipp
-# d3vilh/openvpn-server drafted 2FA support
+# v.0.1 by @electromech-cpl@github.com aka Ms. Disha
+# electromech-cpl/openvpn drafted 2FA support
 #
 # MFA verification by OpenVPN server using oath-tool
 

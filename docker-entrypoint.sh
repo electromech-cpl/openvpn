@@ -1,5 +1,5 @@
 #!/bin/bash
-#VERSION 0.2.3 by @d3vilh@github.com aka Mr. Philipp
+#VERSION 0.2.3 by @electromech@github.com aka Ms. Disha
 set -e
 
 #Variables

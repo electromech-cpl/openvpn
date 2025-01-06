@@ -1,5 +1,5 @@
 #!/bin/bash
-#VERSION 0.3 by d3vilh@github.com aka Mr. Philipp
+#VERSION 0.3 by electromech-cpl@github.com aka Ms. Disha
 # Exit immediately if a command exits with a non-zero status
 set -e
 

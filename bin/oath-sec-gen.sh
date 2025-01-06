@@ -1,6 +1,6 @@
 #!/bin/sh
-# v.0.1 by @d3vilh@github.com aka Mr. Philipp
-# d3vilh/openvpn-server drafted 2FA support
+# v.0.1 by @electromech-cpl@github.com aka Ms. Disha
+# electromech/openvpn drafted 2FA support
 
 # Client name in format: alice@wonderland.ua
 TFA_NAME=$1
