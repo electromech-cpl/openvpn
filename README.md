@@ -1,9 +1,9 @@
-# d3vilh/openvpn-server
+# electromech-cpl/openvpn
 Fast Docker container with OpenVPN Server living inside.
 
-[![latest version](https://img.shields.io/github/v/release/d3vilh/openvpn-server?color=%2344cc11&label=LATEST%20RELEASE&style=flat-square&logo=Github)](https://github.com/d3vilh/openvpn-server/releases/latest)  [![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/d3vilh/openvpn-server/latest?style=flat-square&logo=docker&logoColor=white&label=DOCKER%20IMAGE&color=2344cc11)](https://hub.docker.com/r/d3vilh/openvpn-server) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/d3vilh/openvpn-server/latest?logo=Docker&color=2344cc11&label=IMAGE%20SIZE&style=flat-square&logoColor=white)
+[![latest version](https://img.shields.io/github/v/release/electromech-cpl/openvpn-server?color=%2344cc11&label=LATEST%20RELEASE&style=flat-square&logo=Github)](https://github.com/electromech-cpl/openvpn/releases/latest)  [![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/electromech-cpl/openvpn/latest?style=flat-square&logo=docker&logoColor=white&label=DOCKER%20IMAGE&color=2344cc11)](https://hub.docker.com/r/electromech-cpl/openvpn) ![Docker Image Size (tag)](https://img.shields.io/docker/image-size/electromech-cpl/openvpn/latest?logo=Docker&color=2344cc11&label=IMAGE%20SIZE&style=flat-square&logoColor=white)
 
-[![latest version](https://img.shields.io/github/v/release/d3vilh/openvpn-ui?color=%2344cc11&label=OpenVPN%20UI&style=flat-square&logo=Github)](https://github.com/d3vilh/openvpn-ui) [![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/d3vilh/openvpn-ui/latest?logo=docker&label=OpenVPN%20UI%20IMAGE&color=2344cc11&style=flat-square&logoColor=white)](https://hub.docker.com/r/d3vilh/openvpn-ui) 
+[![latest version](https://img.shields.io/github/v/release/electromech-cpl/openvpn-ui?color=%2344cc11&label=OpenVPN%20UI&style=flat-square&logo=Github)](https://github.com/electromech-cpl/openvpn-ui) [![Docker Image Version (tag latest semver)](https://img.shields.io/docker/v/electromech-cpl/openvpn-ui/latest?logo=docker&label=OpenVPN%20UI%20IMAGE&color=2344cc11&style=flat-square&logoColor=white)](https://hub.docker.com/r/eletromech-cpl/openvpn-ui) 
 
 ## Important changes
 
@@ -78,7 +78,7 @@ services:
        image: d3vilh/openvpn-ui:latest
        environment:
            - OPENVPN_ADMIN_USERNAME=admin
-           - OPENVPN_ADMIN_PASSWORD=gagaZush
+           - OPENVPN_ADMIN_PASSWORD=EmcCpl
        privileged: true
        ports:
            - "8080:8080/tcp"
@@ -96,38 +96,37 @@ services:
 * `GUEST_SUB` is Gusets subnet for clients with internet access only
 * `HOME_SUB` is subnet where the VPN server is located, thru which you get internet access to the clients with MASQUERADE
 * `fw-rules.sh` is bash file with additional firewall rules you would like to apply during container start
-* `checkpsw.sh` is a dummy bash script to use with `auth-user-pass-verify` option in `server.conf` file. It is used to check user credentials against some external passwords DB, like LDAP or oath, or MySQL. If you don't need this option, just leave it as is.
 
 `docker_entrypoint.sh` will apply following Firewall rules:
 ```shell
 IPT MASQ Chains:
-MASQUERADE  all  --  ip-10-0-70-0.ec2.internal/24  anywhere
-MASQUERADE  all  --  ip-10-0-71-0.ec2.internal/24  anywhere
+MASQUERADE  all  --  ip-10-0-2-0.ec2.internal/24  anywhere
+MASQUERADE  all  --  ip-10-0-3-0.ec2.internal/24  anywhere
 IPT FWD Chains:
-       0        0 DROP       1    --  *      *       10.0.71.0/24         0.0.0.0/0            icmptype 8
-       0        0 DROP       1    --  *      *       10.0.71.0/24         0.0.0.0/0            icmptype 0
-       0        0 DROP       0    --  *      *       10.0.71.0/24         192.168.88.0/24
+       0        0 DROP       1    --  *      *       10.0.3.0/24         0.0.0.0/0            icmptype 8
+       0        0 DROP       1    --  *      *       10.0.3.0/24         0.0.0.0/0            icmptype 0
+       0        0 DROP       0    --  *      *       10.0.3.0/24         10.0.1.0/24
 ``` 
 Here is possible content of `fw-rules.sh` file to apply additional rules:
 ```shell
 ~/openvpn-server $ cat fw-rules.sh
-iptables -A FORWARD -s 10.0.70.88 -d 10.0.70.77 -j DROP
-iptables -A FORWARD -d 10.0.70.77 -s 10.0.70.88 -j DROP
+iptables -A FORWARD -s 10.0.2.88 -d 10.0.2.77 -j DROP
+iptables -A FORWARD -d 10.0.2.77 -s 10.0.2.88 -j DROP
 ```
 
-<img src="https://github.com/d3vilh/raspberry-gateway/raw/master/images/OVPN_VLANs.png" alt="OpenVPN Subnets" width="700" border="1" />
+<img src="https://github.com/electromech-cpl/raspberry-gateway/raw/master/images/OVPN_VLANs.png" alt="OpenVPN Subnets" width="700" border="1" />
 
-Check attached `docker-compose-no-ui.yml` file to run openvpn-server withput [OpenVPN UI](https://github.com/d3vilh/openvpn-ui) container.
+Check attached `docker-compose-no-ui.yml` file to run openvpn-server withput [OpenVPN UI](https://github.com/electromech-cpl/openvpn-ui) container.
 
 **Default EasyRSA** configuration can be changed in `~/openvpn-server/config/easy-rsa.vars` file:
 
 ```shell
 set_var EASYRSA_DN           "org"
-set_var EASYRSA_REQ_COUNTRY  "UA"
-set_var EASYRSA_REQ_PROVINCE "KY"
-set_var EASYRSA_REQ_CITY     "Kyiv"
-set_var EASYRSA_REQ_ORG      "SweetHome"
-set_var EASYRSA_REQ_EMAIL    "sweet@home.net"
+set_var EASYRSA_REQ_COUNTRY  "IN"
+set_var EASYRSA_REQ_PROVINCE "MU"
+set_var EASYRSA_REQ_CITY     "MU"
+set_var EASYRSA_REQ_ORG      "ElectroMech"
+set_var EASYRSA_REQ_EMAIL    "emcsupport@electromech.info"
 set_var EASYRSA_REQ_OU       "MyOrganizationalUnit"
 set_var EASYRSA_REQ_CN       "server"
 set_var EASYRSA_KEY_SIZE     2048
@@ -147,9 +146,9 @@ docker run  --interactive --tty --rm \
   --name=openvpn \
   --cap-add=NET_ADMIN \
   -p 1194:1194/udp \
-  -e TRUST_SUB=10.0.70.0/24 \
-  -e GUEST_SUB=10.0.71.0/24 \
-  -e HOME_SUB=192.168.88.0/24 \
+  -e TRUST_SUB=10.0.2.0/24 \
+  -e GUEST_SUB=10.0.3.0/24 \
+  -e HOME_SUB=10.0.1.0/24 \
   -v ./pki:/etc/openvpn/pki \
   -v ./clients:/etc/openvpn/clients \
   -v ./config:/etc/openvpn/config \
@@ -167,7 +166,7 @@ docker run \
 -v /home/pi/openvpn-server/db:/opt/openvpn-ui/db \
 -v /home/pi/openvpn-server/pki:/usr/share/easy-rsa/pki \
 -e OPENVPN_ADMIN_USERNAME='admin' \
--e OPENVPN_ADMIN_PASSWORD='gagaZush' \
+-e OPENVPN_ADMIN_PASSWORD='EmcCpl' \
 -p 8080:8080/tcp \
 --privileged d3vilh/openvpn-ui:latest
 ```
@@ -175,12 +174,12 @@ docker run \
 ### Build image form scratch:
 1. Clone the repo:
 ```shell
-git clone https://github.com/d3vilh/openvpn-server
+git clone https://github.com/electromech-cpl/openvpn
 ```
 2. Build the image:
 ```shell
 cd openvpn-server
-docker build --force-rm=true -t d3vilh/openvpn-server .
+docker build --force-rm=true -t electromech/openvpn-server .
 ```
 
 ## Configuration
@@ -196,7 +195,7 @@ This setup use `tun` mode, as the most compatible with wide range of devices, fo
 
 The topology used is `subnet`, for the same reasons. `p2p`, for instance, does not work on Windows.
 
-The server config [specifies](https://github.com/d3vilh/openvpn-aws/blob/master/openvpn/server.conf#L34) `push redirect-gateway def1 bypass-dhcp`, meaning that after establishing the VPN connection, all traffic will go through the VPN. This might cause problems if you use local DNS recursors which are not directly reachable, since you will try to reach them through the VPN and they might not answer to you. If that happens, use public DNS resolvers like those of OpenDNS (`208.67.222.222` and `208.67.220.220`) or Google (`8.8.4.4` and `8.8.8.8`).
+The server config [specifies](https://github.com/electromech/openvpn-aws/blob/master/openvpn/server.conf#L34) `push redirect-gateway def1 bypass-dhcp`, meaning that after establishing the VPN connection, all traffic will go through the VPN. This might cause problems if you use local DNS recursors which are not directly reachable, since you will try to reach them through the VPN and they might not answer to you. If that happens, use public DNS resolvers like those of OpenDNS (`208.67.222.222` and `208.67.220.220`) or Google (`8.8.4.4` and `8.8.8.8`).
 
 ### OpenVPN Server Pstree structure
 
@@ -246,37 +245,37 @@ All the Server and Client configuration located in mounted Docker volume and can
 |-- staticclients //Directory where stored all the satic clients configuration
 ```
 
-### Generating .OVPN client profiles with [OpenVPN UI](https://github.com/d3vilh/openvpn-ui)
+### Generating .OVPN client profiles with [OpenVPN UI](https://github.com/electromech-cpl/openvpn-ui)
 
-You can access **OpenVPN UI** on it's own port (*e.g. `http://localhost:8080`, change `localhost` to your Public or Private IPv4 address*), the default user and password is `admin/gagaZush` which can be changed via Docker enviroment.
+You can access **OpenVPN UI** on it's own port (*e.g. `http://localhost:8080`, change `localhost` to your Public or Private IPv4 address*), the default user and password is `admin/EmcCpl` which can be changed via Docker enviroment.
 
 You can update external client IP and port address anytime under `"Configuration > OpenVPN Client"` menu. 
 
 For this go to `"Configuration > OpenVPN Client"`:
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-ext_serv_ip1.png" alt="Configuration > Settings" width="350" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-ext_serv_ip1.png" alt="Configuration > Settings" width="350" border="1" />
 
 And then update `"Connection Address"` and `"Connection Port"` fields with your external Internet IP and Port. 
 
 To generate new Client Certificate go to `"Certificates"`, then press `"Create Certificate"` button, enter new VPN client name, complete all the rest fields and press `"Create"` to generate new Client certificate:
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-ext_serv_ip2.png" alt="Server Address" width="350" border="1" />  <img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-New_Client.png" alt="Create Certificate" width="350" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-ext_serv_ip2.png" alt="Server Address" width="350" border="1" />  <img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-New_Client.png" alt="Create Certificate" width="350" border="1" />
 
 To download .OVPN client configuration file, press on the `Client Name` you just created:
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-New_Client_download.png" alt="download OVPN" width="350" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-New_Client_download.png" alt="download OVPN" width="350" border="1" />
 
 Install [Official OpenVPN client](https://openvpn.net/vpn-client/) to your client device.
 
 Deliver .OVPN profile to the client device and import it as a FILE, then connect with new profile to enjoy your free VPN:
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Palm_import.png" alt="PalmTX Import" width="350" border="1" /> <img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Palm_connected.png" alt="PalmTX Connected" width="350" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Palm_import.png" alt="PalmTX Import" width="350" border="1" /> <img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Palm_connected.png" alt="PalmTX Connected" width="350" border="1" />
 
 ### Renew Certificates for client profiles
 
 To renew certificate, go to `"Certificates"` and press `"Renew"` button for the client you would like to renew certificate for:
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Cert-Renew.01.png" alt="Renew OpenVPN Certificate" width="600" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Cert-Renew.01.png" alt="Renew OpenVPN Certificate" width="600" border="1" />
 
 Right after this step new Certificate will be genrated and it will appear as new client profile with the same Client name. At this point both client profiles will have updated Certificate when you try to download it.
 
@@ -291,11 +290,11 @@ Renewal process will not affect active VPN connections, old client will be disco
 If you would like to prevent client to use yor VPN connection, you have to revoke client certificate and restart the OpenVPN daemon.
 You can do it via OpenVPN UI `"Certificates"` menue, by pressing `"Revoke"`` amber button:
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Revoke.png" alt="Revoke Certificate" width="600" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Revoke.png" alt="Revoke Certificate" width="600" border="1" />
 
 Certificate revoke won't kill active VPN connections, you'll have to restart the service if you want the user to immediately disconnect. It can be done from the same `"Certificates"` page, by pressing Restart red button:
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Restart.png" alt="OpenVPN Restart" width="600" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Restart.png" alt="OpenVPN Restart" width="600" border="1" />
 
 You can do the same from the `"Maintenance"` page.
 
@@ -303,11 +302,11 @@ After Revoking and Restarting the service, the client will be disconnected and w
 
 ### OpenVPN client subnets. Guest and Home users
 
-By default this [Openvpn-Server](https://github.com/d3vilh/openvpn-server) OpenVPN server uses option `server 10.0.70.0/24` as **"Trusted"** subnet to grab dynamic IPs for all your Clients which, by default will have full access to your **"Private/Home"** subnet, as well as Internet over VPN.
-However you can be desired to share internet over VPN with specific, Guest Clients and restrict access to your **"Private/Home"** subnet. For this scenario [Openvpn-Server's](https://github.com/d3vilh/openvpn-server) `server.conf` configuration file has special `route 10.0.71.0/24` option, aka **"Guest users"** subnet.
+By default this [Openvpn-Server](https://github.com/electromech-cpl/openvpn) OpenVPN server uses option `server 10.0.2.0/24` as **"Trusted"** subnet to grab dynamic IPs for all your Clients which, by default will have full access to your **"Private/Home"** subnet, as well as Internet over VPN.
+However you can be desired to share internet over VPN with specific, Guest Clients and restrict access to your **"Private/Home"** subnet. For this scenario [Openvpn-Server's](https://github.com/electromech-cpl/openvpn) `server.conf` configuration file has special `route 10.0.3.0/24` option, aka **"Guest users"** subnet.
 
 <p align="center">
-<img src="https://github.com/d3vilh/raspberry-gateway/blob/master/images/OVPN_VLANs.png" alt="OpenVPN Subnets" width="700" border="1" />
+<img src="https://github.com/electromech-cpl/raspberry-gateway/blob/master/images/OVPN_VLANs.png" alt="OpenVPN Subnets" width="700" border="1" />
 </p>
 
 To assign desired subnet policy to the specific client, you have to define static IP address for the client during its profile/Certificate creation.
@@ -347,11 +346,11 @@ For example, if you would like to restrict Home subnet access to your best frien
 
 ```shell
 slava@Ukraini:~/openvpn/staticclients $ pwd
-/home/slava/openvpn/staticclients
-slava@Ukraini:~/openvpn/staticclients $ ls -lrt | grep Slava
--rw-r--r-- 1 slava heroi 38 Nov  9 20:53 Slava
-slava@Ukraini:~/openvpn/staticclients $ cat Slava
-ifconfig-push 10.0.71.2 255.255.255.0
+/home/emc/openvpn/staticclients
+emc@electromech.info:~/openvpn/staticclients $ ls -lrt | grep emc
+-rw-r--r-- 1 emc heroi 38 Nov  9 20:53 emc
+slava@Ukraini:~/openvpn/staticclients $ cat emc
+ifconfig-push 10.0.3.2 255.255.255.0
 ```
 
 > Keep in mind, by default, all the clients have full access, so you don't need to specifically configure static IP for your own devices, your home devices always will land to **"Trusted"** subnet by default. 
@@ -359,34 +358,34 @@ ifconfig-push 10.0.71.2 255.255.255.0
 
 ### Screenshots of managing OpenVPN Server with OpenVPN UI:
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Login.png" alt="OpenVPN-UI Login screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Login.png" alt="OpenVPN-UI Login screen" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Home.png" alt="OpenVPN-UI Home screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Home.png" alt="OpenVPN-UI Home screen" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Certs.png" alt="OpenVPN-UI Certificates screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Certs.png" alt="OpenVPN-UI Certificates screen" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Create-Cert.png" alt="OpenVPN-UI Create Certificate screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Create-Cert.png" alt="OpenVPN-UI Create Certificate screen" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Certs-Details-Expire.png" alt="OpenVPN-UI Expire Certificate details" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Certs-Details-Expire.png" alt="OpenVPN-UI Expire Certificate details" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Certs-Details_OK.png" alt="OpenVPN-UI OK Certificate details" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Certs-Details_OK.png" alt="OpenVPN-UI OK Certificate details" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-EasyRsaVars.png" alt="OpenVPN-UI EasyRSA vars screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-EasyRsaVars.png" alt="OpenVPN-UI EasyRSA vars screen" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-EasyRsaVars-View.png" alt="OpenVPN-UI EasyRSA vars config view screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-EasyRsaVars-View.png" alt="OpenVPN-UI EasyRSA vars config view screen" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Maintenance.png" alt="OpenVPN-UI Maintenance screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Maintenance.png" alt="OpenVPN-UI Maintenance screen" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Server-config.png" alt="OpenVPN-UI Server Configuration screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Server-config.png" alt="OpenVPN-UI Server Configuration screen" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Server-config-edit.png" alt="OpenVPN-UI Server Configuration edit screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Server-config-edit.png" alt="OpenVPN-UI Server Configuration edit screen" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-ClientConf.png" alt="OpenVPN-UI Client Configuration screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-ClientConf.png" alt="OpenVPN-UI Client Configuration screen" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Config.png" alt="OpenVPN-UI Configuration screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Config.png" alt="OpenVPN-UI Configuration screen" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Profile.png" alt="OpenVPN-UI User Profile" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Profile.png" alt="OpenVPN-UI User Profile" width="1000" border="1" />
 
-<img src="https://github.com/d3vilh/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Logs.png" alt="OpenVPN-UI Logs screen" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpn-ui/blob/main/docs/images/OpenVPN-UI-Logs.png" alt="OpenVPN-UI Logs screen" width="1000" border="1" />
 
-<a href="https://www.buymeacoffee.com/d3vilh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="51" width="217"></a>
+<a href="https://www.electromech.info/electromech-cpl" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="51" width="217"></a>
