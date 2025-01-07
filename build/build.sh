@@ -1,5 +1,6 @@
 #!/bin/bash
-# VERSION 1.3 by Disha Rajyaguru. Based on work by d3vilh@github.com aka Mr. Philipp. Thanks bugsyb@github.com for all the efforts ;)
+
+# VERSION 1.3 customized by Disha Rajyaguru using ElectromechVPN repository
 
 set -e  # Exit immediately if a command exits with a non-zero status. Set -x option for debugging
 
@@ -50,7 +51,7 @@ sed -i "s#FROM DEFINE-YOUR-ARCH#$BEEIMAGE#g" Dockerfile-beego
 printf "Dockerfiles updated \n\033[1;34mBuilding Golang and Bee environment.\033[0m\n"
 
 # Build golang & bee environment
-docker build --progress=plain --platform=$PLATFORM -f Dockerfile-beego -t local/beego-v8 -t local/beego-v8:latest .
+docker build --platform=$PLATFORM -f Dockerfile-beego -t local/beego-v8 -t local/beego-v8:latest .
 printf "\033[1;34mBuilding ElectromechVPN-UI and qrencode binaries.\033[0m\n"
 
 # Run a beego-v8 container to build qrencode and execute bee pack
