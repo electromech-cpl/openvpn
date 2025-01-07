@@ -1,11 +1,21 @@
-# armv5l raspberry pi 1/zero 32bit: FROM arm32v5/golang:1.20, armv7l raspberry pi 2/3/4 32bit: FROM arm32v7/golang:1.20
-# AMD64 64bit: golang:1.20, armv8l raspberry pi 3/4 64bit: FROM arm64v8/golang:1.20
-FROM golang:1.23.4-bookworm
+# Define architecture and platform dynamically
+ARG ARCH
+ARG PLATFORM
+ARG BEEIMAGE
+ARG MAINTAINER
+ARG VERSION
 
-LABEL maintainer="Mr.Philipp <d3vilh@github.com>"
+# Set the maintainer label dynamically
+LABEL maintainer=$MAINTAINER
+LABEL version=$VERSION
 
-# Set the working directory to /beego and installing dependencies
+# Use the beego base image passed from build.sh
+FROM $BEEIMAGE
+
+# Set the working directory to /beego
 WORKDIR /beego
+
+# Install dependencies based on the chosen image
 RUN apt-get update && apt-get install git musl-tools -y
 
 # Enable go modules
@@ -15,15 +25,17 @@ ENV CGO_ENABLED=1
 # Copy the go.mod and go.sum files to the container
 COPY go.mod go.sum ./
 
-# Download the dependencies
+# Download dependencies
 RUN go mod download
 
 # Install the beego and bee packages
 RUN go install github.com/beego/bee/v2@develop
 
-# Setting working directory to /app and getting qrencode from github
+# Set the working directory to /app and clone the new openvpn repository
 WORKDIR /app
-RUN git clone https://github.com/d3vilh/qrencode
 
-# Set the working directory to /
+# Clone the new openvpn repo (using the updated repo URL)
+RUN git clone https://github.com/electromech-cpl/openvpn.git
+
+# Set the working directory back to /
 WORKDIR /
