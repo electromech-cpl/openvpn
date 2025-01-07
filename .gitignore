@@ -8,3 +8,6 @@ easy-rsa/pki/index.txt
 build/qrencode
 ElectromechVPN-ui.tar.gz
 qrencode
+
+.DS_Store
+bin/oath-orig.sh
