@@ -41,16 +41,13 @@ Part of following projects:
 
 ## Installation
 For the best experience, it is recommended to deploy it within a Docker environment consisting of two distinct containers:
- - The [`d3vilh/openvpn-server`](https://github.com/electromech-cpl/openvpn-server) Back-End container (openvpn) for running OpenVPN server.
+ - The [`electromech-cpl/openvpn-server`](https://github.com/electromech-cpl/openvpn-server) Back-End container (openvpn) for running OpenVPN server.
  - OpenVPN UI Front-End container (openvpn-ui) for efficient management of the OpenVPN server environment.
 
 However it works fine as standalone application with standalone OpenVPN server as well.
 ### Intel x86 and AMD64 platforms
 You can run both containers from the official [openvpn-server](https://github.com/electromech-cpl/openvpn-server) repository, `docker-compose-openvpnui.yml`.
 It includes all the files in its main directory. 
-
-For automated installation on baremetal x86-64 servers, Cloud or VM installation, please use [openvpn-aws](https://github.com/d3vilh/openvpn-aws) project.
-It, as well, includes all the necessary scripts for easy installation of OpenVPN-UI and OpenVPN server on any x86-64 platform.
 
 ### Raspberry-pi and other ARM platforms
 For Raspberry-Pi and other ARM devices, consider [Raspberry-Gateway](https://github.com/d3vilh/raspberry-gateway) project.
