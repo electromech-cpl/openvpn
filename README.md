@@ -1,4 +1,4 @@
-# OpenVPN UI
+# EmcplVPN
 
 OpenVPN server web administration interface.
 
@@ -21,7 +21,7 @@ Quick to deploy and easy to use, makes work with small OpenVPN environments a br
 * **Maintain EasyRSA PKI infrastructure** (init, build-ca, gen-dh, build-crl, gen-ta, revoke)
 * Change OpenVPN Server configuration via web interface
 * Easy to preview OpenVPN Server logs
-* Restart OpenVPN Server and OpenVPN UI from web interface
+* Restart OpenVPN Server and EmcplVPN from web interface
 * **OpenVPN-UI users management**. Administrators has full access, regular users to Certificates management, logs and status page only.
 * OpenVPN-UI Admin user and password can be passed via environment variables to container
 * Updated infrustracture:
@@ -42,7 +42,7 @@ Part of following projects:
 ## Installation
 For the best experience, it is recommended to deploy it within a Docker environment consisting of two distinct containers:
  - The [`electromech-cpl/openvpn-server`](https://github.com/electromech-cpl/openvpn-server) Back-End container (openvpn) for running OpenVPN server.
- - OpenVPN UI Front-End container (openvpn-ui) for efficient management of the OpenVPN server environment.
+ - EmcplVPN Front-End container (openvpn-ui) for efficient management of the OpenVPN server environment.
 
 However it works fine as standalone application with standalone OpenVPN server as well.
 ### Intel x86 and AMD64 platforms
@@ -428,7 +428,7 @@ Now when new OpenVPN-UI version is deployed, the DB schema were updated to the l
 * All tables were updated with new fields, existed fields in those tables were not touched to be sure you won't loose any data.
 * New tables were created with default values.
 
-Now you need to go to `Configuration > OpenVPN Server` in OpenVPN UI webpage and review and update all options fields very carefully.
+Now you need to go to `Configuration > OpenVPN Server` in EmcplVPN webpage and review and update all options fields very carefully.
 
 Here is example of Server configuration page with new fields after the upgrade from version 0.3 to 0.9:
 
@@ -448,7 +448,7 @@ Here is how it should looks like:
 
 New `server.conf` file will be applied immedeately, after you press **`Save Config`** button.
 
-Next, you have to update `OpenVPN UI`, `OpenVPN Client` and `EasyRSA vars` pages the same way.
+Next, you have to update `EmcplVPN`, `OpenVPN Client` and `EasyRSA vars` pages the same way.
 
 And you are done with the upgrade process.
 
@@ -458,7 +458,7 @@ And you are done with the upgrade process.
    ##### DB Schema changes 0.3 to 0.9 versions
    You have nothing to do with the DB schema, just for your information.
 
-  | Version | Table             | New Field                     | New OpenVPN UI gui location     |
+  | Version | Table             | New Field                     | New EmcplVPN gui location     |
   |---------|-------------------|-------------------------------|---------------------------------|
   | **0.3** | o_v_config        | o_v_config_log_version        | Configuration > OpenVPN Server  |
   | 0.3     | o_v_config        | o_v_config_status_log         | Configuration > OpenVPN Server  |
@@ -559,7 +559,7 @@ Thats it you are back to the previous version.
   </details>
 
 ## Configuration
-**OpenVPN UI** can be accessed on own port (*e.g. http://localhost:8080), the default user and password is `admin/gagaZush` preconfigured in `config.yml` if you are using Raspberry-Gateway or Openvpn-aws projects. For standalone installation, you can pass your own credentials via environment variables to container (refer to [Manual installation](https://github.com/d3vilh/openvpn-ui#manual-installation)).
+**EmcplVPN** can be accessed on own port (*e.g. http://localhost:8080), the default user and password is `admin/gagaZush` preconfigured in `config.yml` if you are using Raspberry-Gateway or Openvpn-aws projects. For standalone installation, you can pass your own credentials via environment variables to container (refer to [Manual installation](https://github.com/d3vilh/openvpn-ui#manual-installation)).
 
 ### Container volume
 The container volume can be initialized by using the [d3vilh/openvpn-server](https://github.com/d3vilh/openvpn-server) image with included scripts to automatically generate everything you need on the first run:
@@ -569,10 +569,10 @@ The container volume can be initialized by using the [d3vilh/openvpn-server](htt
  - a self-certificate matching the private key for the OpenVPN server
  - a TLS auth key from HMAC security
 
-However you can generate all the above components on OpenVPN UI `Configuration > Maintenance` page.
+However you can generate all the above components on EmcplVPN `Configuration > Maintenance` page.
 
 ### EasyRSA vars
-You can update all EasyRSA parameters with OpenVPN UI on `Configuration > EasyRSA vars` page. You also can set custom EasyRSA vars for every new Client Certificate during its creation.
+You can update all EasyRSA parameters with EmcplVPN on `Configuration > EasyRSA vars` page. You also can set custom EasyRSA vars for every new Client Certificate during its creation.
 
 If you are running OpenVPN-UI as manuall installation, please be sure `easy-rsa.vars` is set properly and placed in `.config` container volume as `easy-rsa.vars`. 
 
@@ -607,7 +607,7 @@ The server config by default [specifies](https://github.com/d3vilh/openvpn-serve
 
 If you wish to use your local DNS server (Pi-Hile?), you have to modify a [dns-configuration](https://github.com/d3vilh/openvpn-server/tree/main/config/server.conf#L21) with your local DNS IP address. 
 
-This also can be done easy via `"Configuration" > "OpenVPN Server" > "Push DHCP"` options on OpenVPN UI webpage.
+This also can be done easy via `"Configuration" > "OpenVPN Server" > "Push DHCP"` options on EmcplVPN webpage.
 
 ### OpenVPN client subnets. Guest and Home users
 
@@ -660,7 +660,7 @@ All the Server and Client configuration located in Docker volume and can be ease
 |   |-- client.conf
 |   |-- easy-rsa.vars //EasyRSA vars draft, see below real vars file.
 |-- db
-|   |-- data.db       //OpenVPN UI DB
+|   |-- data.db       //EmcplVPN DB
 |-- log
 |   |-- openvpn.log
 |-- pki
@@ -745,7 +745,7 @@ Renewal process will not affect active VPN connections, old client will be disco
       <summary>How to revoke client certificate</summary>
 
 If you would like to prevent client to use yor VPN connection, you have to revoke client certificate and restart the OpenVPN daemon.
-You can do it via OpenVPN UI `"Certificates"` menue, by pressing `"Revoke"`` amber button:
+You can do it via EmcplVPN `"Certificates"` menue, by pressing `"Revoke"`` amber button:
 
 <img src="https://github.com/electromech-cpl/openvpnblob/main/docs/images/OpenVPN-UI-Revoke.png" alt="Revoke Certificate" width="600" border="1" />
 
@@ -837,7 +837,7 @@ Required ENV variables for google login to work.
 
 Kudos to [opsnin](https://github.com/electromech-cpl/openvpnpull/89) for this feature.
 ### User Management
-Starting from `v.0.9.2` OpenVPN UI has user management feature. 
+Starting from `v.0.9.2` EmcplVPN has user management feature. 
 
 You can create and delete users with different privileges - Administrators or regular users:
 * Administrators has full access
@@ -854,9 +854,9 @@ This functionality available via `"Users Profiles"` page:
 
 Then, if your user have enough privilegies you can Create new profile or manage profiles of other users:
 
-<img src="https://github.com/electromech-cpl/openvpnblob/main/docs/images/OpenVPN-UI-ProfileCreate.png" alt="New OpenVPN UI Profile creation" width="600" border="1" />
+<img src="https://github.com/electromech-cpl/openvpnblob/main/docs/images/OpenVPN-UI-ProfileCreate.png" alt="New EmcplVPN Profile creation" width="600" border="1" />
 
-<img src="https://github.com/electromech-cpl/openvpnblob/main/docs/images/OpenVPN-UI-ProfileManage.png" alt="OpenVPN UI Profiles management" width="600" border="1" />
+<img src="https://github.com/electromech-cpl/openvpnblob/main/docs/images/OpenVPN-UI-ProfileManage.png" alt="EmcplVPN Profiles management" width="600" border="1" />
 
 </details>
 
@@ -890,15 +890,15 @@ Then, if your user have enough privilegies you can Create new profile or manage 
 
 <img src="https://github.com/electromech-cpl/openvpnblob/main/docs/images/OpenVPN-UI-Profile.png" alt="OpenVPN-UI User Profile" width="1000" border="1" />
 
-<img src="https://github.com/electromech-cpl/openvpnblob/main/docs/images/OpenVPN-UI-ProfileCreate.png" alt="New OpenVPN UI Profile creation" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpnblob/main/docs/images/OpenVPN-UI-ProfileCreate.png" alt="New EmcplVPN Profile creation" width="1000" border="1" />
 
-<img src="https://github.com/electromech-cpl/openvpnblob/main/docs/images/OpenVPN-UI-ProfileManage.png" alt="OpenVPN UI Profiles management" width="1000" border="1" />
+<img src="https://github.com/electromech-cpl/openvpnblob/main/docs/images/OpenVPN-UI-ProfileManage.png" alt="EmcplVPN Profiles management" width="1000" border="1" />
 
 
 <img src="https://github.com/electromech-cpl/openvpnblob/main/docs/images/OpenVPN-UI-Logs.png" alt="OpenVPN-UI Logs screen" width="1000" border="1" />
 
 ## Дякую and Kudos to the initiator of this project
 
-Kudos to @adamwalach for development of the original [OpenVPN-WEB-UI](https://github.com/adamwalach/openvpn-web-ui) project which was used as solid foundation for OpenVPN UI.
+Kudos to @adamwalach for development of the original [OpenVPN-WEB-UI](https://github.com/adamwalach/openvpn-web-ui) project which was used as solid foundation for EmcplVPN.
 
 <a href="https://www.buymeacoffee.com/d3vilh" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" height="51" width="217"></a>
