@@ -16,7 +16,7 @@ Quick to deploy and easy to use, makes work with small OpenVPN environments a br
 * Supports OpenVPN **tunnel**(`dev tun`) or **bridge**(`dev tap`) server configurations
 * Easy to **generate**, **download**, **renew**, **revoke**, **delete** and **view** client certificates
 * Client can have secret **passphrase** and **static IP** assigned during client certificate generation
-* Two factor authentication (**[2FA/MFA](https://github.com/d3vilh/openvpn-ui#two-factor-authentication-2fa)**) support
+* Two factor authentication (**[2FA/MFA](https://github.com/electromech-cpl/openvpn#two-factor-authentication-2fa)**) support
 * **Change predefined EasyRSA vars** including certificates and CRL expiration time
 * **Maintain EasyRSA PKI infrastructure** (init, build-ca, gen-dh, build-crl, gen-ta, revoke)
 * Change OpenVPN Server configuration via web interface
@@ -31,22 +31,22 @@ Quick to deploy and easy to use, makes work with small OpenVPN environments a br
   * Easy-rsa 3.X
   * Openssl 3.X
   * OpenVPN 2.5.8 Server is fully compatible
-    * Compatible OpenVPN Server images can be found on Docker Hub - [d3vilh/openvpn-server:latest](https://hub.docker.com/r/d3vilh/openvpn-server)
-    * As well as Openvpn-UI itself - [d3vilh/openvpn-ui:latest](https://hub.docker.com/r/d3vilh/openvpn-ui)
+    * Compatible OpenVPN Server images can be found on Docker Hub - [electromech-cpl/openvpn-server:latest](https://hub.docker.com/r/d3vilh/openvpn-server)
+    * As well as Openvpn-UI itself - [electromech-cpl/openvpn-ui:latest](https://hub.docker.com/r/d3vilh/openvpn-ui)
 * Support any architecture, ready images for AMD64 and ARM [available on Docker Hub](https://hub.docker.com/r/d3vilh/openvpn-ui).
 
 Part of following projects:
-* [Openvpn-aws](https://github.com/d3vilh/openvpn-aws) OpenVPN and OpenVPN-UI for any Cloud, VM or x86 bare metal server.
+* [Openvpn-aws](https://github.com/electromech/openvpn-aws) OpenVPN and OpenVPN-UI for any Cloud, VM or x86 bare metal server.
 * [Raspberry-gateway](https://github.com/d3vilh/raspberry-gateway) simple yet powerful home gateway environment with Pi-Hole +Unbound, VPN, Torrent client and Internet monitoring, all managed by Portainer.
 
 ## Installation
 For the best experience, it is recommended to deploy it within a Docker environment consisting of two distinct containers:
- - The [`d3vilh/openvpn-server`](https://github.com/d3vilh/openvpn-server) Back-End container (openvpn) for running OpenVPN server.
+ - The [`d3vilh/openvpn-server`](https://github.com/electromech-cpl/openvpn-server) Back-End container (openvpn) for running OpenVPN server.
  - OpenVPN UI Front-End container (openvpn-ui) for efficient management of the OpenVPN server environment.
 
 However it works fine as standalone application with standalone OpenVPN server as well.
 ### Intel x86 and AMD64 platforms
-You can run both containers from the official [openvpn-server](https://github.com/d3vilh/openvpn-server) repository, `docker-compose-openvpnui.yml`.
+You can run both containers from the official [openvpn-server](https://github.com/electromech-cpl/openvpn-server) repository, `docker-compose-openvpnui.yml`.
 It includes all the files in its main directory. 
 
 For automated installation on baremetal x86-64 servers, Cloud or VM installation, please use [openvpn-aws](https://github.com/d3vilh/openvpn-aws) project.
@@ -56,7 +56,7 @@ It, as well, includes all the necessary scripts for easy installation of OpenVPN
 For Raspberry-Pi and other ARM devices, consider [Raspberry-Gateway](https://github.com/d3vilh/raspberry-gateway) project.
 It has all the necessary scripts for easy installation and lot of additional features.
 
-You can run both containers from the [openvpn-server](https://github.com/d3vilh/openvpn-server) repository as well (use `docker-compose-openvpnui.yml`).
+You can run both containers from the [openvpn-server](https://github.com/electromech-cpl/openvpn-server) repository as well (use `docker-compose-openvpnui.yml`).
 It includes all the files in its main directory, as well. 
 
 ### Manual installation
@@ -69,7 +69,7 @@ It includes all the files in its main directory, as well.
 ```yaml
     openvpn-ui:
        container_name: openvpn-ui
-       image: d3vilh/openvpn-ui:latest
+       image: local/openvpn-ui:latest
        environment:
            - OPENVPN_ADMIN_USERNAME={{ ovpnui_user }}
            - OPENVPN_ADMIN_PASSWORD={{ ovpnui_password }}
@@ -85,7 +85,7 @@ It includes all the files in its main directory, as well.
 ```
 ---
 
-You can also couple OpenVPN-UI with recommended [d3vilh/openvpn-server](https://github.com/d3vilh/openvpn-server) image and here is updated `docker-compose.yml` for it:
+You can also couple OpenVPN-UI with recommended [electromech-cpl/openvpn-server](https://github.com/electromech-cpl/openvpn-server) image and here is updated `docker-compose.yml` for it:
 
 ```yaml
 ---
@@ -116,7 +116,7 @@ services:
 
     openvpn-ui:
        container_name: openvpn-ui
-       image: d3vilh/openvpn-ui:latest
+       image: local/openvpn-ui:latest
        environment:
            - OPENVPN_ADMIN_USERNAME=admin
            - OPENVPN_ADMIN_PASSWORD=gagaZush
@@ -205,7 +205,7 @@ docker run \
 
 Run the OpenVPN Server image:
 ```shell
-git clone https://github.com/d3vilh/openvpn-server ~/openvpn-server && \
+git clone https://github.com/electromech-cpl/openvpn-server ~/openvpn-server && \
 cd ~/openvpn-server/ && \
 docker run  --interactive --tty --rm \
   --name=openvpn-server \
@@ -221,7 +221,7 @@ docker run  --interactive --tty --rm \
   -v ./log:/var/log/openvpn \
   -v ./fw-rules.sh:/opt/app/fw-rules.sh \
   -v ./server.conf:/etc/openvpn/server.conf \
-  --privileged d3vilh/openvpn-server:latest
+  --privileged electromech/openvpn-server:latest
 ```
   </details>
 
