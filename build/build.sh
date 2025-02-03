@@ -49,7 +49,7 @@ sed -i "s#FROM DEFINE-YOUR-ARCH#$BEEIMAGE#g" Dockerfile-beego
 printf "Dockerfiles updated \n\033[1;34mBuilding Golang and Bee enviroment.\033[0m\n"
 
 # Build golang & bee environment
-docker build --progress=plain --platform=$PLATFORM -f Dockerfile-beego -t local/beego-v8 -t local/beego-v8:latest .
+docker build --platform=$PLATFORM -f Dockerfile-beego -t local/beego-v8 -t local/beego-v8:latest .
 printf "\033[1;34mBuilding OpenVPN-UI and qrencode binaries.\033[0m\n"
 
 # Run a beego-v8 container to build qrencode and execute bee pack
