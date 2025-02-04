@@ -7,44 +7,36 @@ on:
 
 jobs:
   build-deploy:
+    # Use the "docker" environment where you've configured env vars & secrets
+    environment: docker  
     runs-on: ubuntu-latest
 
-    # Make environment variables available in all steps
-    env:
-      DOCKERHUB_REPO: ${{ env.DOCKERHUB_REPO }}
-      DOCKERHUB_USERNAME: ${{ env.DOCKERHUB_USERNAME }}
-      DOCKERHUB_TOKEN: ${{ env.DOCKERHUB_TOKEN }}
-      IMAGE_TAG: ${{ env.IMAGE_TAG }}
-
     steps:
-      # 1) Check out your repository code
+      # 1) Check out code
       - name: Check out code
         uses: actions/checkout@v3
 
-      # 2) Optional: Make sure your build script is executable
-      - name: Make build script executable
-        run: chmod +x build/build.sh
-
-      # 3) Run your build script
-      #    Ensure it calls 'docker build' with something like:
-      #    docker build -t "$DOCKERHUB_REPO:$IMAGE_TAG" .
-      - name: Run build script
+      # 2) Build the Docker image
+      #    This calls your script inside "build/" folder.
+      #    Make sure build.sh runs "docker build -t $DOCKERHUB_REPO:$IMAGE_TAG ."
+      - name: Build Docker Image
         run: |
           cd build
+          chmod +x build.sh
           ./build.sh
 
-      # 4) Login to Docker Hub using the environment variables
+      # 3) Login to Docker Hub using the DOCKERHUB_TOKEN secret
       - name: Docker Hub Login
         run: |
-          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login \
+            -u "${{ env.DOCKERHUB_USERNAME }}" --password-stdin
 
-      # 5) Push the Docker image
-      #    Make sure the tag here matches the tag in your build script.
+      # 4) Push the Docker image (using environment variables DOCKERHUB_REPO & IMAGE_TAG)
       - name: Push Docker Image
         run: |
-          docker push "$DOCKERHUB_REPO:$IMAGE_TAG"
+          docker push "${{ env.DOCKERHUB_REPO }}:${{ env.IMAGE_TAG }}"
 
-      # 6) Create a GitHub release referencing the Docker image tag
+      # 5) Create a GitHub Release referencing the Docker image tag
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
@@ -54,4 +46,5 @@ jobs:
           draft: false
           prerelease: false
         env:
+          # Provided automatically by GitHub to allow release creation
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
