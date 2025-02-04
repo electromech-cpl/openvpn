@@ -1,51 +1,53 @@
-name: ci
+name: Build & Deploy Docker
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
-    
+
     steps:
-      # 1) Check out the code
+      # 1) Check out the repository code
       - name: Check out code
         uses: actions/checkout@v3
 
-      # 2) Docker Hub Login via docker/login-action
+      # 2) Log in to Docker Hub using the official docker/login-action
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # 3) Build your images using build.sh
-      #    This script produces a local "local/openvpn-ui" image
+      # 3) Build your Docker images using the build script
+      #    Make sure build.sh produces local image "local/openvpn-ui"
       - name: Build Docker Images
         run: |
           cd build
           chmod +x build.sh
           ./build.sh
 
-      # 4) Re-tag the final local image for Docker Hub
+      # 4) Re-tag the final "local/openvpn-ui" to Docker Hub
       - name: Tag final image
         run: |
-          docker tag local/openvpn-ui "${{ vars.DOCKERHUB_REPO }}:${{ vars.IMAGE_TAG }}"
+          docker tag local/openvpn-ui "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG }}"
 
       # 5) Push the newly tagged image to Docker Hub
       - name: Push Docker Image
         run: |
-          docker push "${{ vars.DOCKERHUB_REPO }}:${{ vars.IMAGE_TAG }}"
+          docker push "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG }}"
 
       # 6) Create a GitHub Release referencing the Docker image tag
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ vars.IMAGE_TAG }}
-          release_name: "Release ${{ vars.IMAGE_TAG }}"
-          body: "Docker image: ${{ vars.DOCKERHUB_REPO }}:${{ vars.IMAGE_TAG }}"
+          tag_name: ${{ secrets.DOCKERHUB_IMAGE_TAG }}
+          release_name: "Release ${{ secrets.DOCKERHUB_IMAGE_TAG }}"
+          body: "Docker image: ${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG }}"
           draft: false
           prerelease: false
         env:
+          # Provided automatically by GitHub for workflow actions
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
