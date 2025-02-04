@@ -7,41 +7,30 @@ on:
 
 jobs:
   build-deploy:
-    environment: docker  # Ties this job to your "docker" environment
+    environment: docker  
     runs-on: ubuntu-latest
 
     steps:
-      # 1) Check out your repository code
       - name: Check out code
         uses: actions/checkout@v3
-
-      # 2) Log in to Docker Hub using docker/login-action
       - name: Docker Hub login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           logout: true
-
-      # 3) Build your Docker images using the build script
-      #    This script is expected to produce a local image "local/openvpn-ui:latest"
       - name: Build Docker Images
         run: |
           cd build
           chmod +x build.sh
           ./build.sh
-
-      # 5) Tag the final local image for Docker Hub
       - name: Tag final image
         run: |
           docker tag local/openvpn-ui:latest "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG || 'latest' }}"
           docker images
-      # 6) Push the image to Docker Hub
       - name: Push Docker Image
         run: |
           docker push "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG }}"
-
-      # 7) Create a GitHub Release referencing the Docker image tag
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
@@ -51,5 +40,4 @@ jobs:
           draft: false
           prerelease: false
         env:
-          # Provided automatically by GitHub for workflow actions
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
