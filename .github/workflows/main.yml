@@ -6,41 +6,51 @@ on:
       - main
 
 jobs:
-  build-and-deploy:
+  build-deploy:
     runs-on: ubuntu-latest
-    steps:
-      # 1) Check out the current repository
-      - name: Check out code
-        uses: actions/checkout@v2
 
-      # 2) Run your custom build script, which builds the Docker image
+    # Make environment variables available in all steps
+    env:
+      DOCKERHUB_REPO: ${{ env.DOCKERHUB_REPO }}
+      DOCKERHUB_USERNAME: ${{ env.DOCKERHUB_USERNAME }}
+      DOCKERHUB_TOKEN: ${{ env.DOCKERHUB_TOKEN }}
+      IMAGE_TAG: ${{ env.IMAGE_TAG }}
+
+    steps:
+      # 1) Check out your repository code
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      # 2) Optional: Make sure your build script is executable
+      - name: Make build script executable
+        run: chmod +x build/build.sh
+
+      # 3) Run your build script
+      #    Ensure it calls 'docker build' with something like:
+      #    docker build -t "$DOCKERHUB_REPO:$IMAGE_TAG" .
       - name: Run build script
         run: |
-          chmod +x build/build.sh
+          cd build
           ./build/build.sh
-        # If needed, pass environment variables here or handle them inside the script
 
-      # 3) Login to Docker Hub using secrets
+      # 4) Login to Docker Hub using the environment variables
       - name: Docker Hub Login
         run: |
-          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+          echo "$DOCKERHUB_TOKEN" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
 
-      # 4) Push the Docker image to Docker Hub
-      #    This assumes your build script has already tagged the Docker image.
-      #    Adjust the image name/tag as needed to match what's done in build/build.sh.
-      - name: Push Docker image
+      # 5) Push the Docker image
+      #    Make sure the tag here matches the tag in your build script.
+      - name: Push Docker Image
         run: |
-          # Example: If build script tagged image as "YOUR_DOCKERHUB_USERNAME/YOUR_DOCKERHUB_REPOSITORY:${GITHUB_SHA}"
-          docker push YOUR_DOCKERHUB_USERNAME/YOUR_DOCKERHUB_REPOSITORY:${{ github.sha }}
+          docker push "$DOCKERHUB_REPO:$IMAGE_TAG"
 
-      # 5) Create a GitHub release with the Docker image tag in the release
+      # 6) Create a GitHub release referencing the Docker image tag
       - name: Create GitHub Release
-        id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ github.sha }}
-          release_name: "Release for commit ${{ github.sha }}"
-          body: "Docker image tag: YOUR_DOCKERHUB_USERNAME/YOUR_DOCKERHUB_REPOSITORY:${{ github.sha }}"
+          tag_name: ${{ env.IMAGE_TAG }}
+          release_name: "Release ${{ env.IMAGE_TAG }}"
+          body: "Docker image: ${{ env.DOCKERHUB_REPO }}:${{ env.IMAGE_TAG }}"
           draft: false
           prerelease: false
         env:
