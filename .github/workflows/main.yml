@@ -31,19 +31,10 @@ jobs:
           chmod +x build.sh
           ./build.sh
 
-      # 4) Debug (optional): Confirm your DOCKERHUB_REPO and DOCKERHUB_IMAGE_TAG secrets are not empty
-      - name: Debug secrets (optional)
-        env:
-          MY_DOCKERHUB_REPO: ${{ secrets.DOCKERHUB_REPO }}
-          MY_DOCKERHUB_TAG: ${{ secrets.DOCKERHUB_IMAGE_TAG }}
-        run: |
-          echo "DOCKERHUB_REPO length: ${#MY_DOCKERHUB_REPO}"
-          echo "DOCKERHUB_IMAGE_TAG length: ${#MY_DOCKERHUB_TAG}"
-
       # 5) Tag the final local image for Docker Hub
       - name: Tag final image
         run: |
-          docker tag local/openvpn-ui:latest "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG }}"
+          docker tag local/openvpn-ui:latest "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG || 'latest' }}"
 
       # 6) Push the image to Docker Hub
       - name: Push Docker Image
