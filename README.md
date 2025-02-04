@@ -257,7 +257,7 @@ The new image will have `openvpn-ui` name.
   <details>
     <summary>Standalone installation</summary>
 
-#### Standalone installation without docker and docker-compose
+#### Standalone installation without docker and docker-compose 
 
 If you have your OpenVPN server up and running on the same host, you can install OpenVPN-UI as standalone application.
 For this you need to have GoLang installed on your host to build all the necessary binaries on the server itself.
