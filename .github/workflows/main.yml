@@ -7,8 +7,8 @@ on:
 
 jobs:
   build-deploy:
+    environment: docker
     runs-on: ubuntu-latest
-
     steps:
       # 1) Check out the repository code
       - name: Check out code
