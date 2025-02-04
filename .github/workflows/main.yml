@@ -31,7 +31,7 @@ jobs:
       - name: Run build script
         run: |
           cd build
-          ./build/build.sh
+          ./build.sh
 
       # 4) Login to Docker Hub using the environment variables
       - name: Docker Hub Login
