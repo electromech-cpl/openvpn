@@ -13,29 +13,35 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+
+      - name: Extract short commit SHA
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
       - name: Docker Hub login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
           logout: true
+
       - name: Build Docker Images
         run: |
           cd build
           chmod +x build.sh
           ./build.sh
+
       - name: Tag final image
         run: |
           docker tag local/openvpn-ui:latest "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG || 'latest' }}"
-          docker images
       - name: Push Docker Image
         run: |
           docker push "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG }}"
+
       - name: Create GitHub Release
         uses: actions/create-release@v1
         with:
-          tag_name: ${{ secrets.DOCKERHUB_IMAGE_TAG }}
-          release_name: "Release ${{ secrets.DOCKERHUB_IMAGE_TAG }}"
+          tag_name: "release-${{ env.SHORT_SHA }}"
+          release_name: "Release ${{ env.SHORT_SHA }}"
           body: "Docker image: ${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG }}"
           draft: false
           prerelease: false
