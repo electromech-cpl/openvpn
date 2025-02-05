@@ -19,7 +19,7 @@ if [ ! -f $OPENVPN_DIR/.provisioned ]; then
 
   # Create the provisioned file
   touch $OPENVPN_DIR/.provisioned
-  echo "First EmcplVPN start."
+  echo "First EMC VPN start."
 fi
 
 # Change to the OpenVPN GUI directory
@@ -29,5 +29,5 @@ cd /opt/openvpn-ui
 mkdir -p db
 
 # Start the OpenVPN GUI
-echo "Starting EmcplVPN!"
+echo "Starting EMC VPN!"
 ./openvpn-ui
