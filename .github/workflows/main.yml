@@ -8,7 +8,7 @@ on:
 jobs:
   build-deploy:
     environment: docker  
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04-arm
 
     steps:
       - name: Check out code
@@ -28,19 +28,22 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          # set `logout: true` if you want to log out after pushing
-          # logout: true
+          logout: true
 
-      - name: Build Docker Images Locally
+      - name: Build Docker Images
         run: |
           cd build
           chmod +x build.sh
           ./build.sh
 
-      - name: Tag & Push OpenVPN-UI image
+      - name: Tag final image
         run: |
+          docker images
           docker tag local/openvpn-ui:latest "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG || 'latest' }}"
-          docker push "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG || 'latest' }}"
+
+      - name: Push Docker Image
+        run: |
+          docker push "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG }}"
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
