@@ -38,6 +38,7 @@ jobs:
 
       - name: Tag final image
         run: |
+          docker images
           docker tag local/openvpn-ui:latest "${{ secrets.DOCKERHUB_REPO }}:${{ secrets.DOCKERHUB_IMAGE_TAG || 'latest' }}"
 
       - name: Push Docker Image
