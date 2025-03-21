@@ -80,7 +80,8 @@ cp -f ../$QRFILE ./
 cp -f ../$UIFILE ./
 
 # Build openvpn-ui image
-docker build -t local/openvpn-ui .
+docker buildx create --use --name multiarch_builder || true
+docker buildx build --platform linux/amd64,linux/arm64 -t local/openvpn-ui .
 rm -f $UIFILE; rm -f $(basename $UIFILE); #rm -f $QRFILE;
 printf "\033[1;34mAll done.\033[0m\n"
 
